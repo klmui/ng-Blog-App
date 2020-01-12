@@ -1,0 +1,13 @@
+An Observer subscribes to an Observable
+
+An Observer can call:
+  next() - this updates whatever
+  error()
+  complete() - done and no more next calls
+
+Observer:
+  invokes next() on Observer
+
+
+A Subject is a special kind of Observable. - subscribe but can manually call next(), makes a perfect event emitter
+A normal Obserable is kind of passive. - set up listener and subscribe

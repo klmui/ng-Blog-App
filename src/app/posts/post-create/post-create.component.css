@@ -1,0 +1,17 @@
+/* Don't forget to import this in the ts file */
+mat-card{
+  background: white;
+  color: black;
+}
+
+mat-form-field-hide-placeholder {
+  color: black;
+}
+
+mat-form-field, textarea {
+  width: 100%;
+}
+
+mat-spinner {
+  margin: auto; /* Center */
+}

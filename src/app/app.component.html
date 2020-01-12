@@ -1,0 +1,10 @@
+<!-- Be sure to register this component in the app.module.ts -->
+<app-header></app-header>
+<main>
+  <!-- The dollar sign gives us access to the data we emitted -->
+  <!-- <app-post-create (postCreated)="onPostAdded($event)"></app-post-create>
+  <app-post-list [posts]="storedPosts"></app-post-list> -->
+
+  <!-- Hook for Angular Router to load different pages. We always have the app-header though -->
+  <router-outlet></router-outlet>
+</main>

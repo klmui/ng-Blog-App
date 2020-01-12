@@ -1,0 +1,49 @@
+<!-- We can also use String interpretation in the textarea -->
+<!-- The square brackets is an example of property binding, we use it generally to output data -->
+<!-- <textarea rows="6" [value]="newPost" #postInput></textarea> -->
+
+<!-- [()] is a two-way directive, combines setting and reading of a variable -->
+<!-- This will updated 'enteredValue' with every keystroke. matInput will turn it into an angular material component -->
+
+<mat-card>
+  <mat-spinner *ngIf='isLoading'></mat-spinner>
+  <form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
+    <mat-form-field>
+      <!-- <input matInput type="text" [(ngModel)]="enteredTitle"> -->
+      <!-- [ngModel] pre-populates form and post is coming from the post field in the ts file-->
+      <!-- use ? operator to check whether that field exists first-->
+      <input
+        matInput
+        type="text"
+        name="title"
+        [ngModel]="post?.title"
+        required
+        minlength="3"
+        placeholder="Post Title"
+        #title="ngModel"> <!-- Model registers the form so Angular is aware of the control-->
+        <mat-error *ngIf="title.invalid">Please enter a post title.</mat-error>
+      </mat-form-field>
+    <mat-form-field>
+      <textarea
+        matInput
+        rows="4"
+        name="content"
+        [ngModel]="post?.content"
+        required
+        placeholder="Post Content"
+        #content="ngModel">
+      </textarea>
+      <mat-error *ngIf="content.invalid">Please enter content.</mat-error>
+    </mat-form-field>
+    <!-- Angular event listener -->
+    <!-- <button mat-raised-button color="primary" (click)="onAddPost()">Save Post </button> -->
+    <button
+    mat-raised-button
+    color="primary"
+    type="submit">Save Post
+    </button>
+  </form>
+</mat-card>
+
+<!-- String interpretation: Add output hooks to template double curly brackets. A property name or method from the ts file can go inside of them -->
+<!-- <p>{{ newPost }}</p> -->

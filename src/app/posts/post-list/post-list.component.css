@@ -1,0 +1,18 @@
+.mat-expansion-panel {
+  background: white;
+  color: black;
+}
+
+mat-spinner {
+  margin: auto;
+}
+
+/* Host is the element itself */
+:host {
+  display: block; /* Everything starts on a new line and takes up the whole width */
+  margin-top: 1rem;
+}
+
+.info-text {
+  text-align: center;
+}
