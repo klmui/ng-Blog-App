@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
@@ -23,12 +23,23 @@ export class PostCreateComponent implements OnInit {
   private postId: string;
   post: Post;
   isLoading = false;
+  form: FormGroup; // Form group groups all of the controls of a form
 
   // Connect to service
-  constructor(public postsService: PostsService, public route: ActivatedRoute) {} // ActivatedRoute gives us info about the route we're on
+  constructor(
+    public postsService: PostsService,
+    public route: ActivatedRoute
+  ) {} // ActivatedRoute gives us info about the route we're on
 
   // Change routing while using same component
   ngOnInit() {
+    this.form = new FormGroup({
+      // Initial value is null
+      'title': new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)]
+      }),
+      'content': new FormControl(null, {validators: [Validators.required]})
+    });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       // postId identifier is from the app-routing.module
       if (paramMap.has('postId')) {
@@ -42,6 +53,11 @@ export class PostCreateComponent implements OnInit {
           this.isLoading = false;
           this.post = {id: postData._id, title: postData.title, content: postData.content}
         });
+        // Initialize post incase we got a loaded post
+        this.form.setValue({
+          'title': this.post.title,
+          'content': this.post.content
+        });
       } else {
         this.mode = 'create';
         this.postId = null;
@@ -50,22 +66,23 @@ export class PostCreateComponent implements OnInit {
   }
 
   // Method triggered upon event
-  onSavePost(form: NgForm) {
-    if (form.invalid) {
+  // Can take an argument such as form: NgForm
+  onSavePost() {
+    if (this.form.invalid) {
       return;
     }
     this.isLoading = true;
     if (this.mode === 'create') {
-      this.postsService.addPost(form.value.title, form.value.content);
+      this.postsService.addPost(this.form.value.title, this.form.value.content);
     } else {
       this.postsService.updatePost (
         this.postId,
-        form.value.title,
-        form.value.content
+        this.form.value.title,
+        this.form.value.content
       );
     }
 
     // this.postCreated.emit(post); not required because of service
-    form.resetForm();
+    this.form.reset();
   }
 }

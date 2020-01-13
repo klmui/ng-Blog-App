@@ -7,21 +7,18 @@
 
 <mat-card>
   <mat-spinner *ngIf='isLoading'></mat-spinner>
-  <form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
+  <!-- Form group directive equals whatever the property we set in the TS file-->
+  <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!isLoading">
     <mat-form-field>
       <!-- <input matInput type="text" [(ngModel)]="enteredTitle"> -->
-      <!-- [ngModel] pre-populates form and post is coming from the post field in the ts file-->
+      <!-- [ngModel] (can only use for template-driven) pre-populates form and post is coming from the post field in the ts file-->
       <!-- use ? operator to check whether that field exists first-->
       <input
         matInput
         type="text"
-        name="title"
-        [ngModel]="post?.title"
-        required
-        minlength="3"
-        placeholder="Post Title"
-        #title="ngModel"> <!-- Model registers the form so Angular is aware of the control-->
-        <mat-error *ngIf="title.invalid">Please enter a post title.</mat-error>
+        formControlName="title"
+        placeholder="Post Title">
+        <mat-error *ngIf="form.get('title').invalid">Please enter a post title.</mat-error>
       </mat-form-field>
       <div>
         <!-- Default is type="submit" and tries to submit whole form -->
@@ -33,13 +30,11 @@
       <textarea
         matInput
         rows="4"
+        formControlName="content"
         name="content"
-        [ngModel]="post?.content"
-        required
-        placeholder="Post Content"
-        #content="ngModel">
+        placeholder="Post Content">
       </textarea>
-      <mat-error *ngIf="content.invalid">Please enter content.</mat-error>
+      <mat-error *ngIf="form.get('content').invalid">Please enter content.</mat-error>
     </mat-form-field>
     <!-- Angular event listener -->
     <!-- <button mat-raised-button color="primary" (click)="onAddPost()">Save Post </button> -->

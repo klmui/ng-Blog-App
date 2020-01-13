@@ -4,7 +4,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core'; // Added
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms'; // Added
+// import { FormsModule } from '@angular/forms'; // Added
+import { ReactiveFormsModule } from '@angular/forms'; // Reactive-driven rather than template-driven
 import { HttpClientModule } from "@angular/common/http";
 import {
   MatInputModule,
@@ -34,7 +35,7 @@ import { PostListComponent } from './posts/post-list/post-list.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule, // Added,
     MatInputModule,
     MatCardModule,
