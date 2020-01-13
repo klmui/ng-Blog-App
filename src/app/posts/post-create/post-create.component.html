@@ -23,6 +23,12 @@
         #title="ngModel"> <!-- Model registers the form so Angular is aware of the control-->
         <mat-error *ngIf="title.invalid">Please enter a post title.</mat-error>
       </mat-form-field>
+      <div>
+        <!-- Default is type="submit" and tries to submit whole form -->
+        <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
+        <!-- Hide this button and use the one above-->
+        <input type="file" #filePicker>
+      </div>
     <mat-form-field>
       <textarea
         matInput
