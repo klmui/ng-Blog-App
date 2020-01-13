@@ -24,6 +24,7 @@ export class PostCreateComponent implements OnInit {
   post: Post;
   isLoading = false;
   form: FormGroup; // Form group groups all of the controls of a form
+  imagePreview: string;
 
   // Connect to service
   constructor(
@@ -35,10 +36,12 @@ export class PostCreateComponent implements OnInit {
   ngOnInit() {
     this.form = new FormGroup({
       // Initial value is null
-      'title': new FormControl(null, {
+      // Controls
+      title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)]
       }),
-      'content': new FormControl(null, {validators: [Validators.required]})
+      content: new FormControl(null, {validators: [Validators.required]}),
+      image: new FormControl(null, {validators: [Validators.required]})
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       // postId identifier is from the app-routing.module
@@ -51,18 +54,40 @@ export class PostCreateComponent implements OnInit {
         this.postsService.getPost(this.postId).subscribe(postData => {
           // Hide spinner
           this.isLoading = false;
-          this.post = {id: postData._id, title: postData.title, content: postData.content}
-        });
+          this.post = {
+            id: postData._id,
+            title: postData.title,
+            content: postData.content
+        };
         // Initialize post incase we got a loaded post
-        this.form.setValue({
-          'title': this.post.title,
-          'content': this.post.content
+          this.form.setValue({
+          title: this.post.title,
+          content: this.post.content
         });
+      });
       } else {
         this.mode = 'create';
         this.postId = null;
       }
     }); // On built-in observables, we don't need to unsub. Listen to changes and use same component, but change URL
+  }
+
+  // Event is provided by TS
+  onImagePicked(event: Event) {
+    // Access image and select the one file the user uploaded
+    const file = (event.target as HTMLInputElement).files[0];
+
+    // Patch allows us to target a single control
+    // The control image is the file
+    this.form.patchValue({image: file});
+    this.form.get('image').updateValueAndValidity();
+    const reader = new FileReader();
+    // Function executed when done loading resource
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    // Load file
+    reader.readAsDataURL(file);
   }
 
   // Method triggered upon event

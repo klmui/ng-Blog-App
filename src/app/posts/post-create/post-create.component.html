@@ -11,37 +11,29 @@
   <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!isLoading">
     <mat-form-field>
       <!-- <input matInput type="text" [(ngModel)]="enteredTitle"> -->
-      <!-- [ngModel] (can only use for template-driven) pre-populates form and post is coming from the post field in the ts file-->
-      <!-- use ? operator to check whether that field exists first-->
-      <input
-        matInput
-        type="text"
-        formControlName="title"
-        placeholder="Post Title">
-        <mat-error *ngIf="form.get('title').invalid">Please enter a post title.</mat-error>
-      </mat-form-field>
-      <div>
-        <!-- Default is type="submit" and tries to submit whole form -->
-        <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
-        <!-- Hide this button and use the one above-->
-        <input type="file" #filePicker>
-      </div>
+      <!-- [ngModel]=ngForm (can only use for template-driven) pre-populates form and post is coming from the post field in the ts file-->
+      <!-- use ? post?.title operator to check whether that field exists first-->
+      <input matInput type="text" formControlName="title" placeholder="Post Title">
+      <mat-error *ngIf="form.get('title').invalid">Please enter a post title.</mat-error>
+    </mat-form-field>
+    <div>
+      <!-- Default is type="submit" and tries to submit whole form -->
+      <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
+      <!-- Hide this button and use the one above. Chain to change event -->
+      <input type="file" #filePicker (change)="onImagePicked($event)">
+    </div>
+    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview">
+      <!-- Use property binding to access underlying property in TS file -->
+      <img [src]="imagePreview" [alt]="form.value.title" >
+    </div>
     <mat-form-field>
-      <textarea
-        matInput
-        rows="4"
-        formControlName="content"
-        name="content"
-        placeholder="Post Content">
+      <textarea matInput rows="4" formControlName="content" name="content" placeholder="Post Content">
       </textarea>
       <mat-error *ngIf="form.get('content').invalid">Please enter content.</mat-error>
     </mat-form-field>
     <!-- Angular event listener -->
     <!-- <button mat-raised-button color="primary" (click)="onAddPost()">Save Post </button> -->
-    <button
-    mat-raised-button
-    color="primary"
-    type="submit">Save Post
+    <button mat-raised-button color="primary" type="submit">Save Post
     </button>
   </form>
 </mat-card>
