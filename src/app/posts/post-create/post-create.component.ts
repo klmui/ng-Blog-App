@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+// Add to image control as an asyncValidator
+import { mimeType } from './mime-type.validator';
 
 // Use kebab case dash separated words when creating name
 
@@ -41,7 +43,10 @@ export class PostCreateComponent implements OnInit {
         validators: [Validators.required, Validators.minLength(3)]
       }),
       content: new FormControl(null, {validators: [Validators.required]}),
-      image: new FormControl(null, {validators: [Validators.required]})
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType] // Only accept images
+      })
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       // postId identifier is from the app-routing.module

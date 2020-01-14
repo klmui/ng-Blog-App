@@ -19,11 +19,12 @@ export const mimeType = (control: AbstractControl): Promise<{ [key: string]: any
       const arr = new Uint8Array(fileReader.result as ArrayBuffer).subarray(0, 4);
 
       let header = "";
+      let isValid = false;
       // Look into pattern
       for (let i = 0; i < arr.length; i++) {
         header += arr[i].toString(16); // Convert to hex string
       }
-      // Check for certain patterns
+      // Check for certain patterns (filetype)
       switch (header) {
         case "89504e47":
           isValid = true;
@@ -39,7 +40,16 @@ export const mimeType = (control: AbstractControl): Promise<{ [key: string]: any
           isValid = false; // Or you can use the blob.type as fallback
           break;
       }
+      if (isValid) {
+        // obserser.next emits a new value (null)
+        // return is emit in oberservables
+        observer.next(null);
+      } else {
+        observer.next({ invalidMimeType: true });
+      }
+      observer.complete(); // Let any subscribers know we're done
     });
     fileReader.readAsArrayBuffer(file); // Access the mime-type
   });
+  return frObs; // File-reader observable
 };
