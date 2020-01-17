@@ -98,7 +98,7 @@ export class PostCreateComponent implements OnInit {
   // Method triggered upon event
   // Can take an argument such as form: NgForm
   onSavePost() {
-    if (this.form.invalid) {
+    if (this.form.invalid) { // Runs all validators in the controls
       return;
     }
     this.isLoading = true;
