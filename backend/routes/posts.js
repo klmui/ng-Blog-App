@@ -1,6 +1,16 @@
 const express = require("express");
+const multer = require("multer");
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, "backend/images"); // error is null, second is path relative to server js
+  },
+  filename: (req, file, cb) => {
+    const name = file.originalname.toLowerCase().split(' ').join('-'); // any whitespace will be a dash
+  }
+});
 
 // Models
 const Post = require('../models/post');
