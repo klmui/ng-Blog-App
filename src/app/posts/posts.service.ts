@@ -48,13 +48,15 @@ export class PostsService {
     return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = {id: null, title: title, content: content};
-    this.http.post<{message: string, postId: string}>('http://localhost:3000/api/posts', post) // path, data
+  addPost(title: string, content: string, image: File) {
+    const postData = new FormData(); // Obj by JS. Combines text values and file values
+    postData.append("title", title);
+    postData.append("content", content);
+    postData.append("image", image, title); // What multer will look for
+
+    this.http.post<{message: string, postId: string}>('http://localhost:3000/api/posts', postData) // path, data
       .subscribe((responseData) => {
-        // Successful response from server side
-        const id = responseData.postId;
-        post.id = id; // Updates id from null
+        const post: Post = {id: responseData.postId, title: title, content: content};
         this.posts.push(post); // Stores posts locally
         this.postsUpdated.next([...this.posts]); // Pushes whatever is in the argument
         this.router.navigate(['/']); // Go back to root route when done
