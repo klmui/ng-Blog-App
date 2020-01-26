@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -19,6 +20,7 @@ mongoose.connect("mongodb+srv://kenny:TyM6HAcwADb0XZx0@cluster0-b9pqp.mongodb.ne
 // Valid middleware for all paths for parsing JSON data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false})); // Parsing URL data
+app.use("/images", express.static(path.join("backend/images"))); // Any requests targeting /images will be able to access it
 
 // Middleware to prevent cross origin resource errors or sharing data between servers
 // Connects server and Angular app

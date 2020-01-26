@@ -10,7 +10,7 @@ const MIME_TYPE_MAP = {
 };
 
 const storage = multer.diskStorage({
-  destination: (req, res, cb) => {
+  destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error("Invalid mime type");
     if (isValid) {
@@ -30,14 +30,21 @@ const Post = require('../models/post');
 
 // Multer will try to find a single image in the req body
 router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+  const url = req.protocol + '://' + req.get("host"); // constructs url to server
   const post = new Post({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    imagePath:url + "/images/" + req.file.filename // filename provided by multer
   }); // Mongoose model allows us to do this
   post.save().then(createdPost => {
     res.status(201).json({
       message: 'Post added successfully',
-      postId: createdPost._id
+      post: {
+        id: createdPost._id,
+        title: createdPost.content,
+        imagePath: createdPost.imagePath
+        // Or just use ...createdPost, id: createdPost._id
+      }
     }); // Send a res so we ensure this doesn't time out. 201 - new resource was created
   }); // Save post to DB
   // No next() here because we are sending a res
