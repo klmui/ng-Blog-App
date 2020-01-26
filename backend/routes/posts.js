@@ -3,19 +3,33 @@ const multer = require("multer");
 
 const router = express.Router();
 
+const MIME_TYPE_MAP = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg'
+};
+
 const storage = multer.diskStorage({
   destination: (req, res, cb) => {
-    cb(null, "backend/images"); // error is null, second is path relative to server js
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error("Invalid mime type");
+    if (isValid) {
+      error = null;
+    }
+    cb(error, "backend/images"); // error is null, second is path relative to server js
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLowerCase().split(' ').join('-'); // any whitespace will be a dash
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    cb(null, name + '-' + Date.now() + '.' + ext); // no error, add filename
   }
 });
 
 // Models
 const Post = require('../models/post');
 
-router.post("", (req, res, next) => {
+// Multer will try to find a single image in the req body
+router.post("", multer(storage).single("image"), (req, res, next) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content
